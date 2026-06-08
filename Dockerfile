@@ -1,5 +1,7 @@
 FROM python:3.11-slim
 
+RUN apt update -y && apt install awscli -y
+
 WORKDIR /app
 
 COPY backend_requiremets.txt .
@@ -8,7 +10,6 @@ COPY backend_requiremets.txt .
 RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 
 RUN pip install --no-cache-dir -r backend_requiremets.txt
-
 
 COPY . .
 
