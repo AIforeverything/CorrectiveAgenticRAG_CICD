@@ -3,10 +3,10 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-groq_model=str(os.getenv("groq_model"))
-groq_model2=str(os.getenv("groq_model2"))
-print(groq_model)
-print(groq_model2)
+groq_model=str(os.getenv("GROQ_MODEL"))
+groq_model2=str(os.getenv("GROQ_MODEL2"))
+# print(groq_model)
+# print(groq_model2)
 from langchain_groq import ChatGroq
 llm=ChatGroq(
     model=groq_model,
