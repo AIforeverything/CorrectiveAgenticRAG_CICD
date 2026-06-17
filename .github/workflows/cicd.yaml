@@ -113,8 +113,8 @@ jobs:
             -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
             -e AWS_REGION="${{ secrets.AWS_REGION }}" \
             -e GROQ_API_KEY="${{ secrets.GROQ_API_KEY }}" \
-            -e groq_model="${{ secrets.groq_model }}" \
-            -e groq_model2="${{ secrets.groq_model2 }}" \
+            -e GROQ_MODEL="${{ secrets.GROQ_MODEL }}" \
+            -e GROQ_MODEL2="${{ secrets.GROQ_MODEL2 }}" \
             -e LANGSMITH_TRACING="${{ secrets.LANGSMITH_TRACING }}" \
             -e LANGSMITH_ENDPOINT="${{ secrets.LANGSMITH_ENDPOINT }}" \
             -e LANGSMITH_API_KEY="${{ secrets.LANGSMITH_API_KEY }}" \
