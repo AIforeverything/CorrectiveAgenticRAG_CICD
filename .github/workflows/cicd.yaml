@@ -86,10 +86,10 @@ jobs:
         run: |
          docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
          
-      # - name: Stop and remove old container
-      #     run: |
-      #       docker stop crag || true
-      #       docker rm -fv crag || true
+      - name: Stop and remove old container
+          run: |
+            docker stop crag || true
+            docker rm -fv crag || true
        
       # - name: Run Docker Image to serve users
       #   run: |
