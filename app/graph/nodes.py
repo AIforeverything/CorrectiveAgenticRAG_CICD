@@ -27,8 +27,7 @@ def chatbot_node(state: ChatState)->dict:
 
     Answer ONLY from retrieved context.
 
-    If context contains no relevent information
-    then reply exactly:
+    If context contains no relevent information in the given document uploaded by the user then reply exactly:
     "Sorry, the given document doesn't contain the information for the question."
 
     Do not hallucinate.
@@ -63,20 +62,22 @@ def knowledge_filtering(state: ChatState):
     # print("context before knowledge filtering in knowledge filtering : \n",context)
 
     SYSTEM_PROMPT = f"""
-    Check each sentence in the context and determine whether it is relevant
-    to answer the query.
+    if the {context} is "Sorry, the given document doesn't contain the information for the question.":
+        return the "Sorry, the given document doesn't contain the information for the question." 
+        to next node directly and do not process.
 
-    Query:
-    {query}
+    else the {context} is not "Sorry, the given document doesn't contain the information for the question.":
+        Check each sentence in the context and determine whether it is relevant
+        to answer the query.
 
-    Context:
-    {context}
+        Query:
+        {query}
 
-    Remove irrelevant sentences.
-    Combine relevant sentences into a single paragraph and return the paragraph as context.
+        Context:
+        {context}
 
-    If nothing is relevent, return exactly:
-    Sorry, the given document doesn't contain the information for the question.
+        Remove irrelevant sentences.
+        Combine relevant sentences into a single paragraph and return the paragraph as context.
 
     use this node only once and do not loop through it.
     """
@@ -105,18 +106,23 @@ def output_node(state:ChatState)->dict:
 
     filtered_context=state['filtered_context']
 
-    SYSTEM_PROMPT = """
-                    You are a RAG assistant.
+    SYSTEM_PROMPT = f"""
+                    If the {filtered_context} is "Sorry, the given document doesn't contain the information for the question.":
+                        return the "Sorry, the given document doesn't contain the information for the question." 
+                        to next node directly and do not process.
 
-                    Answer the user's question using ONLY the supplied context.
+                    else the {filtered_context} is not "Sorry, the given document doesn't contain the information for the question.":
+                        You are a RAG assistant.
 
-                    Do not repeat or summarize the entire context.
-                    Provide only the answer.
+                        Answer the user's question using ONLY the supplied context.
 
-                    If the answer is not present in the context, return exactly:
-                    Sorry, the given document doesn't contain the information for the question.
+                        Do not repeat or summarize the entire context.
+                        Provide only the answer.
 
-                    Do not hallucinate.
+                        If the answer is not present in the context, return exactly:
+                        Sorry, the given document doesn't contain the information for the question.
+
+                        Do not hallucinate.
                     """
     
     messages = [
@@ -145,4 +151,4 @@ def output_node(state:ChatState)->dict:
 
     return {
         "messages": [response]
-}
+    }

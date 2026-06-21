@@ -20,8 +20,9 @@ graph_builder.add_edge("tools","knowledge_filtering")
 graph_builder.add_edge("knowledge_filtering","output_node")
 graph_builder.add_edge("output_node",END)
 
-memory=InMemorySaver()
+# memory=InMemorySaver()
 
-graph=graph_builder.compile(checkpointer=memory)
+# graph=graph_builder.compile(checkpointer=memory)
+graph= graph_builder.compile()
 
 

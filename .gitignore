@@ -10,12 +10,14 @@ uploads
 documents
 
 faiss_index
-vectorstore
+vectorstores
 chroma_db
 
 .cache
 
 .env
+.vscode
+CICD_README.md
 
 *.pdf
 *.docx

@@ -19,12 +19,6 @@ router= APIRouter()
 def home():
     return {"message":"""FastAPI is working. add /docs path to test it. """}
 
-from fastapi import APIRouter, UploadFile, File, Form
-import tempfile
-import os
-
-router = APIRouter()
-
 @router.post("/upload")
 async def upload(
     file: UploadFile = File(...),
