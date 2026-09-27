@@ -1,4 +1,4 @@
-Based on your LangSmith graph, the backend architecture of your **Corrective Agentic RAG (CRAG)** project can be represented as:
+LangSmith graph, the backend architecture of your **Corrective Agentic RAG (CRAG)** project can be represented as:
 
                     ┌─────────────────┐
                     │ User Query      │
