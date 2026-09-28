@@ -1,0 +1,21 @@
+fastapi
+uvicorn
+
+langchain
+langchain-community
+langgraph
+langsmith
+
+faiss-cpu
+
+pymupdf
+docx2txt
+
+python-multipart
+
+langchain-huggingface
+sentence-transformers
+
+langchain-groq
+
+# .e -
