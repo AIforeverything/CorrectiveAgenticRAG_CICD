@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corrective Agentic RAG</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h2>Upload Document</h2>
+      <p class="muted">PDF, TXT or DOCX</p>
+
+      <input id="fileInput" type="file" accept=".pdf,.txt,.docx">
+      <button id="uploadBtn" class="primary">Upload & Process</button>
+      <div id="uploadStatus" class="status"></div>
+
+      <div class="document-card">
+        <span class="label">Current document</span>
+        <span id="filename">None</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="header">
+        <h1>Corrective Agentic RAG</h1>
+        <p>Ask questions about your uploaded document.</p>
+      </header>
+
+      <section id="chat" class="chat"></section>
+
+      <form id="chatForm" class="chat-form">
+        <input id="queryInput" type="text"
+               placeholder="Ask a question about the document"
+               autocomplete="off">
+        <button id="sendBtn" type="submit" class="primary">Send</button>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    // Change this when the FastAPI backend is deployed.
+    const BACKEND_URL = "";
+
+    let sessionId = null;
+    let uploadedFilename = null;
+    const messages = [];
+
+    const chat = document.getElementById("chat");
+    const fileInput = document.getElementById("fileInput");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const uploadStatus = document.getElementById("uploadStatus");
+    const filename = document.getElementById("filename");
+    const chatForm = document.getElementById("chatForm");
+    const queryInput = document.getElementById("queryInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    function addMessage(role, content) {
+      messages.push({ role, content });
+
+      const wrapper = document.createElement("div");
+      wrapper.className = `message ${role}`;
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.textContent = content;
+
+      wrapper.appendChild(bubble);
+      chat.appendChild(wrapper);
+      chat.scrollTop = chat.scrollHeight;
+
+      return bubble;
+    }
+
+    uploadBtn.addEventListener("click", async () => {
+      const file = fileInput.files[0];
+
+      if (!file) {
+        uploadStatus.textContent = "Please select a document.";
+        uploadStatus.className = "status error";
+        return;
+      }
+
+      if (uploadedFilename === file.name) {
+        uploadStatus.textContent = `Current document: ${file.name}`;
+        uploadStatus.className = "status info";
+        return;
+      }
+
+      uploadBtn.disabled = true;
+      uploadStatus.textContent = "Uploading and processing...";
+      uploadStatus.className = "status info";
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("old_session_id", sessionId || "");
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/upload`, {
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+
+        const data = await response.json();
+
+        sessionId = data.session_id;
+        uploadedFilename = file.name;
+        filename.textContent = uploadedFilename;
+
+        chat.innerHTML = "";
+        messages.length = 0;
+
+        uploadStatus.textContent =
+          `Uploaded successfully. Chunks: ${data.chunks}`;
+        uploadStatus.className = "status success";
+
+      } catch (error) {
+        uploadStatus.textContent = `Upload failed: ${error.message}`;
+        uploadStatus.className = "status error";
+      } finally {
+        uploadBtn.disabled = false;
+      }
+    });
+
+    chatForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const query = queryInput.value.trim();
+
+      if (!query) return;
+
+      if (!sessionId) {
+        addMessage("system", "Please upload a document first.");
+        return;
+      }
+
+      addMessage("user", query);
+      queryInput.value = "";
+      sendBtn.disabled = true;
+
+      const assistantBubble = addMessage("assistant", "");
+      let fullResponse = "";
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/chat`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            query: query,
+            session_id: sessionId
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+
+        if (!response.body) {
+          throw new Error("Streaming response is not supported by the browser/backend.");
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+
+          fullResponse += decoder.decode(value, { stream: true });
+          assistantBubble.textContent = fullResponse;
+          chat.scrollTop = chat.scrollHeight;
+        }
+
+        messages[messages.length - 1].content = fullResponse;
+
+      } catch (error) {
+        assistantBubble.textContent = `Error: ${error.message}`;
+      } finally {
+        sendBtn.disabled = false;
+        queryInput.focus();
+      }
+    });
+  </script>
+</body>
+</html>

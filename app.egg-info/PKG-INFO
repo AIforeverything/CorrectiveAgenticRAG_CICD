@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: app
+Version: 1.0.0
+Author: Sudhakar
+Author-email: om.sudhakar@gmail.com
+License: MIT
+Dynamic: author
+Dynamic: author-email
+Dynamic: license

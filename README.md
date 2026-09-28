@@ -7,8 +7,6 @@ LangSmith graph, the backend architecture of your **Corrective Agentic RAG (CRAG
                              ▼
                     ┌─────────────────┐
                     │ chatbot         │
-                    │ Llama-3.3-70B   │
-                    │ (Reasoning)     │
                     └────────┬────────┘
                              │
                              ▼
@@ -37,13 +35,11 @@ LangSmith graph, the backend architecture of your **Corrective Agentic RAG (CRAG
                     ┌─────────────────┐
                     │ knowledge_      │
                     │ filtering       │
-                    │ Llama-3.1-8B    │
                     └────────┬────────┘
                              │
                              ▼
                     ┌─────────────────┐
                     │ output_node     │
-                    │ Llama-3.1-8B    │
                     └────────┬────────┘
                              │
                              ▼
@@ -60,7 +56,7 @@ FastAPI
  ▼
 LangGraph Workflow
  │
- ├── chatbot (Llama-3.3-70B via GROQ)
+ ├── chatbot (GROQ)
  │
  ├── Tool Calling
  │     │
@@ -71,10 +67,10 @@ LangGraph Workflow
  │             └── Retriever
  │
  ├── knowledge_filtering
- │     └── Llama-3.1-8B
+ │     └── (GROQ)
  │
  └── output_node
-       └── Llama-3.1-8B
+       └── (GROQ)
  │
  ▼
 Streamlit Frontend

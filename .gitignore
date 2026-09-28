@@ -11,11 +11,11 @@ documents
 
 faiss_index
 vectorstores
-chroma_db
 
 .cache
 
 .env
+!.env.example
 .vscode
 CICD_README.md
 
