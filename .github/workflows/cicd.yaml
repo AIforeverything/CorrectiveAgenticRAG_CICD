@@ -1,5 +1,4 @@
 name: CRAG CI/CD
-
 on:
   push:
     branches:
