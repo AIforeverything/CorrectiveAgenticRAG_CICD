@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-COPY backend_requirements.txt .
+COPY requirements.txt .
 
 # Install CPU-only PyTorch
 RUN pip install \
@@ -15,7 +15,7 @@ RUN pip install \
     torch
 
 # Install application dependencies
-RUN pip install -r backend_requirements.txt
+RUN pip install -r requirements.txt
 
 COPY . .
 
@@ -27,10 +27,6 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
 # docker build -t image_name .
 
 #to run the docker image:
-# docker run -d \
-#   --name crag \
-#   -p 8080:8080 \
-#   --env-file .env \
-#   crag
+# docker run -d --name crag -p 8080:8080 --env-file .env crag
 
 # docker logs -f crag

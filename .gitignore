@@ -22,5 +22,5 @@ CICD_README.md
 *.pdf
 *.docx
 *.txt
-!backend_requirements.txt
+!requirements.txt
 
