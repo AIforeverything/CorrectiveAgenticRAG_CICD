@@ -28,7 +28,8 @@ LangSmith graph, the backend architecture of your **Corrective Agentic RAG (CRAG
                     │ VectorStore     │
                     │ Retriever       │
                     │ (FAISS +        │
-                    │ Embeddings)     │
+                    │ Embeddings)     |  
+                    | Reranking       │
                     └────────┬────────┘
                              │
                              ▼
